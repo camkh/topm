@@ -30,18 +30,17 @@ if(count($hotPromotionProducts) > 0){
 							<a href="#"
 								onclick="popupDetails.add_popup_detail(<?php echo $hotPromotionProduct->id; ?> )"
 								data-toggle="modal" data-target="#myModal">
-								<?php 
-									if($hotPromotionProduct->thumbnail){
-										echo '<img src="'.Config::get('app.url').'image/phpthumb/'.$hotPromotionProduct->thumbnail.'?p=product&amp;h=90&amp;w=120" />';
-									}else{
-										echo '<img src="'.Config::get('app.url').'image/phpthumb/No_image_available.jpg?p=product&amp;h=90&amp;w=120" />';
-									}
-								?>
+								<img
+								src="{{Config::get('app.url')}}/upload/product/thumb/{{$hotPromotionProduct->thumbnail}}"
+								alt="" />
 							</a>
 							<h2>$ {{$hotPromotionProduct->price}}</h2>
 							<a href="{{Config::get('app.url')}}product/details/{{$hotPromotionProduct->id}}" ><?php echo substr($hotPromotionProduct->title,0,20)?>
 							</a>
 						</div>
+						<img
+							src="{{Config::get('app.url')}}/frontend/images/home/sale.png"
+							class="new" alt="" />
 					</div>
 				</div>
 			</div>

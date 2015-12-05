@@ -26,12 +26,10 @@ $PayMonthly = $thisProduct->listAllProductsByOwnStore($whereHotPromote);
     					<div class="single-products">
     						<div class="productinfo text-center">
     							<a href="{{$userHome}}/my/detail/{{$productHotPromote->id}}">
-                                    @if($product->thumbnail)
-					{{HTML::image("image/phpthumb/$productHotPromote->thumbnail?p=product&amp;h=150&amp;w=150",$productHotPromote->title,array('class'
-						=> 'img-rounded','width'=>'150'))}}
+                                    @if($productHotPromote->thumbnail)
+    								    <img src="{{Config::get('app.url')}}upload/product/thumb/{{$productHotPromote->thumbnail}}" alt="{{$productHotPromote->title}}" />
                                     @else
-                                        {{HTML::image("image/phpthumb/No_image_available.jpg?p=1&amp;h=150&amp;w=150",$productHotPromote->title,array('class'
-                                        => 'img-rounded','width'=>'150'))}}
+                                        <img src="{{Config::get('app.url')}}upload/product/thumb/{{$productHotPromote->thumbnail}}" alt="{{$productHotPromote->title}}" />
                                     @endif
     							</a>
     							<h2>{{$productHotPromote->title}}</h2>

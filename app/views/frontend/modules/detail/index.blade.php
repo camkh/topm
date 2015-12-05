@@ -1,70 +1,43 @@
-@extends('frontend.layout') 
-@section('title') 
-Categories 
-@endsection
-@section('breadcrumb')
-<ol class="breadcrumb">
-    <li><a href="#">Home</a></li>
-    <li><a href="#">Library</a></li>
-    <li class="active">Data</li>
-</ol>
-@endsection
+@extends('frontend.layout')
 @section('content')
-@include('frontend.partials.categories.left')
-	<div class="col-lg-10" style="padding-right:%;">
-		<div class="col-lg-2 pull-right" style="padding:0;">
-			@include('frontend.partials.categories.right')
-		</div>
-		<div class="col-lg-10"  style="padding-left:0;">
-			<div>
-				<!-- ============Slider end here========= -->
-				@include('frontend.partials.products.search')
-				<div class="row">
-					<div id="detail_product" data-get-detail-product-url="{{Config::get('app.url')}}"></div>
-					<?php 
-					if(count($productByCategory) > 0){
-					?>
-						@foreach($productByCategory as $product)
-							<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<a href="#" data-toggle="modal" data-target="#myModal"
-												onclick="popupDetails.add_popup_detail(<?php echo $product->id; ?>)">
-												<?php 
-												if($product->thumbnail){
-													echo '<img src="'.Config::get('app.url').'image/phpthumb/'.$product->thumbnail.'?p=product&amp;h=130&amp;w=160" />';
-												}else{
-													echo '<img src="'.Config::get('app.url').'image/phpthumb/No_image_available.jpg?p=product&amp;h=90&amp;w=120" />';
-												}
-												?>
-											</a>
-											<div class="price">$ {{$product->price}}</div>
-											<center>
-												<a href="{{Config::get('app.url')}}product/details/{{$product->id}}">
-													<?php echo substr($product->title,0,20)?>
-												</a>
-											</center>
-										</div>
-									</div>
-								</div>
-							</div>
-						@endforeach
-					<?php 
-						}else{
-							echo '<p><center style="color:red;">Product not found!</center></p>';
-						}
-					?>
-					</div>
+<script type="text/javascript">
+	var pageType = 'label';
+</script>
+<div class="element-videos">
+	<!-- header -->
+	<div class="panel panel-colorful msHeader searchLabel" style="margin:0">
+		<div class="media-left">
+			<div class="largthumb">
+				<div class="thumb-big">				
+				<span class="icon"></span>
+				</span>
+				<span class="play-button-pause" style="display:none"><span class="icon"></span></span>
+				<div class="imageByLabel" id="imageByLabel">
+				<img alt="Sample Image" class="img-by-label" src="@if(!empty($detail->image)){{$detail->image}}@endif&h=175&w=175" width="175" height="175"/>
+				</div>
 				</div>
 			</div>
 		</div>
+		<div class="media-body pad-lft" style="overflow: visible">			
+			<p class="text-muted mar-no">
+			<span class="badge badge badge-info totalSongs" id="totalSongs"> Tracks</span>
+			</p>
+			<p class="text-muted mar-no" id="topExtraMenu">
+				<button id="dLabel" type="button" class="btn btn-rounded btn-danger">ss</button>
+			</p>
+			<div class="clear"></div>
+			<p class="text-muted mar-no btnHeader">
+				<button onclick="loadding();addCurrentList();" id="addCurrentList" data-add="1" class="btn btn-default btn-icon btn-circle"><span class="icosg-plus1"></span></button>
+				<button onclick="songdetail(&quot;http://www.topkhmersong.com/search/label/P%20--%20Sunday?&amp;max-results=50&amp;PageNo=1&quot;,&quot;P -- Sunday&quot;,&quot;http://1.bp.blogspot.com/-SpkUlcF6PIo/VZqj_kMeJ3I/AAAAAAAAKbU/XedB1Gfc5yw/s150-c/sunday.jpg&quot;);" class="btn btn-default btn-icon btn-circle"><span class="icosg-share2"></span></button>
+				<button onclick="songcomment(&quot;http://www.topkhmersong.com/search/label/P%20--%20Sunday?&amp;max-results=50&amp;PageNo=1&quot;);" class="btn btn-default btn-icon btn-circle"><span class="icosg-comments"></span></button>
+				<button class="btn btn-default btn-icon btn-circle"><span class="icosg-heart1"></span></button>
+			</p>
+		</div>
 	</div>
-@include('frontend.partials.products.popup_details')
+	<!-- end header -->
+
+	<div id="SongWrapper">
+
+	@include('frontend.partials.tvlink')
+</div>
 @endsection
-<script src="{{Config::get('app.url')}}/frontend/js/jquery.js"></script>
-<script src="{{Config::get('app.url')}}/frontend/js/carouselengine/amazingcarousel.js"></script>
-<link rel="stylesheet" type="text/css" href="{{Config::get('app.url')}}/frontend/js/carouselengine/initcarousel-1.css">
-<script src="{{Config::get('app.url')}}/frontend/js/carouselengine/initcarousel-1.js"></script>
-
-

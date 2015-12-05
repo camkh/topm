@@ -8,6 +8,7 @@ class ImageController extends BaseController {
 		} else if($paths ==1) {
 			$paths = '';
 		}
+		$image = str_replace('|', '/', $image);
 		//$src = Input::get('src');
 		/* 
 		 * size=left|right|type // size=100 meant 100% or 40%
@@ -27,7 +28,7 @@ class ImageController extends BaseController {
 		$height = Input::get('h') ? Input::get('h') : 0;
 		$width = Input::get('w') ? Input::get('w') : 0;
 		//return 'test';
-		$destinationPath = base_path () . Config::get ( 'constants.DIR_IMAGE.DEFAULT' ).$paths.'/';
+		$destinationPath = base_path ()  .'/'. Config::get ( 'constants.DIR_IMAGE.DEFAULT' ).$paths.'/';
 		$file = $destinationPath . $image;
 		$thumb = App::make('phpthumb');
 		if($reSize) {

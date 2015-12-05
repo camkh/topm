@@ -6,32 +6,24 @@
 </ol>
 @endsection @section('content')
 {{ App::make('FePageController')->mainCategory() }}
+
+<?php
+	//var_dump($detailProduct);
+?>
 <div class="col-lg-10">
 	<!-- ============Relative post=============== -->
 	<div class="col-lg-10" style="padding-top:10px;background-color:fcfcfc;">
 		<?php
 		$images = json_decode ( $detailProduct->pictures, true );
 		?>
-		<div class="col-lg-12" style="background-color:#FFF; border:1px solid #CCC;">
+		<div class="col-lg-12">
 			<div class="col-lg-9 pull-right">
-				<div class="col-lg-12" style="padding:10px;">
-					<?php $contactInfo = json_decode($detailProduct->contact_info); ?>
-                   <ul id="Detail-Top-Contact">
-					<li><label>Name :</label> {{$contactInfo->contactName}}</li>
-					<li><label>Tel :</label> {{$contactInfo->contactHP}}</li>
-					<li><label>Email :</label> {{$contactInfo->contactEmail}}</li>
-					<li><label>Location :</label> {{$contactInfo->contactLocation}}</li>
-                    </ul>
+				<div class="col-lg-12 top-detail-ads">
+					Top ads
 				</div>
 			</div>
-			<div class="col-lg-3 store-name" style="padding:10px 10px 10px 10px;">
-				<?php
-					if($detailProduct->image){
-						echo '<img src="'.Config::get('app.url').'upload/store/'.$detailProduct->image.'" />';	
-					}else{
-						echo '<img src="'.Config::get('app.url').'image/phpthumb/No_image_available.jpg?p=product&amp;h=90&amp;" />';
-					}
-				?>
+			<div class="col-lg-3 store-name">
+				<img src="{{Config::get('app.url')}}upload/store/{{$detailProduct->image}}" title="" alt="" />
 				<div class="col-lg-10 pull-right" style="margin-top:8px;"><b>{{$detailProduct->{'title_'.Session::get('lang')};}}</b></div>
 			</div>
 		</div>
@@ -39,22 +31,6 @@
 		<div class="col-lg-12">
 			<div class="col-lg-12 title-detail">
 				{{$detailProduct->title}}
-			</div>
-			<div class="task-bar">
-				<span>
-					<input
-						class="btn btn-primary" 
-						type="button" 
-						onclick="ProductDetailPrint.print_product_detail('main_area')" 
-						value="Save / Download" 
-					/>
-				</span>
-				<span class="pull-right store-link">
-					Visit Store:
-						<a href="{{Config::get('app.url')}}store-{{$detailProduct->store_id;}}" style="font-weight:bold;" target="_blank">
-							{{Config::get('app.url')}}store-{{$detailProduct->store_id;}}
-						</a>
-				</span>
 			</div>
 			<div class="clear"></div>
 			<div id="main_area">
@@ -73,15 +49,8 @@
 										@foreach($images as $image)
 										<div class="item"
 											data-slide-number="<?= $thumbnail_id; ?>">
-											<a class="slideshow-group" href="{{Config::get('app.url')}}upload/product/{{$image['pic']}}">
-												<?php
-													if($image['pic']){
-														echo '<img src="'.Config::get('app.url').'image/phpthumb/'.$image['pic'].'?p=product&amp;h=250&amp;w=550" />';	
-													}else{
-														echo '<img src="'.Config::get('app.url').'image/phpthumb/No_image_available.jpg?p=product&amp;h=90&amp;w=" />';
-													}
-												?>
-											</a>
+											<img
+												src="{{Config::get('app.url')}}/upload/product/{{$image['pic']}}">
 										</div>
 											<?php $thumbnail_id++; ?>
 										@endforeach                               
@@ -100,17 +69,10 @@
 										<ul class="hide-bullets">
 											<?php $thumbnails_id = 0; ?>
 												@foreach($images as $image)
-													<li class="col-sm-3">
-														<a 
-														   id="popup-carousel-selector-<?php echo $thumbnails_id;?>"> 
-														   	<?php
-																if($image['pic']){
-																	echo '<img src="'.Config::get('app.url').'image/phpthumb/'.$image['pic'].'?p=product&amp;h=55&amp;w=90" />';	
-																}else{
-																	echo '<img src="'.Config::get('app.url').'image/phpthumb/No_image_available.jpg?p=product&amp;h=55&amp;w=90" />';
-																}
-															?>
-													</li>
+													<li class="col-sm-3"><a class="thumbnail"
+												id="popup-carousel-selector-<?= $thumbnails_id;?>"> <img
+													src="{{Config::get('app.url')}}/upload/product/thumb/{{$image['pic']}}">
+											</a></li>
 													<?php $thumbnails_id++; ?>
 												@endforeach
 											</ul>
@@ -123,20 +85,21 @@
 									
 									<div class="col-lg-12 text-centered" style="border:1px solid #dddddd;background-color:#dddddd;padding:5px 10px;font-weight:bold;font-size:18px;">Current Price : <span class="price">{{$detailProduct->price}}$</span></div>
 									<div class="clear"></div>
-									<div>Product ID:   &nbsp;<span class="pro-condition">{{$detailProduct->id}}</span></div>
-									<div>View: &nbsp;<span class="pro-condition"><?php echo $detailProduct->view;?></span></div>
+									<div>Genuine Price &nbsp;<span class="pro-condition">{{$detailProduct->price}}$</span></div>
+									<div>Discount &nbsp;<span class="pro-condition">10%</span></div>
+									<div>Product ID   &nbsp;<span class="pro-condition">{{$detailProduct->id}}</span></div>
+									<div>View &nbsp;<span class="pro-condition"><?php echo $detailProduct->view;?></span></div>
 									<div>Post Date :&nbsp;<span class="pro-condition"><?php echo date("d/M/Y",strtotime($detailProduct->created_date)); ?> </span></div>
-									<div>Transfer :&nbsp;<span class="pro-condition">{{$detailProduct->{'type_name_'.Session::get('lang')};}}</span></div>
-									<div>Condition :&nbsp;<span class="pro-condition">{{$detailProduct->{'pcon_name_'.Session::get('lang')};}}</span></div>
-									<div>Status :&nbsp;<span class="pro-condition">{{Product::getProductStatus($detailProduct->pro_status)}}</span></div>
-									<hr />
-									<div>Company type :&nbsp;<span class="pro-condition">{{$detailProduct->{'role_name_'.Session::get('lang')};}}</span></div>
-									<div>Bussiness site :&nbsp;<span class="pro-condition">{{$detailProduct->{'client_type_name_'.Session::get('lang')};}}</span></div>
 									<div>Post by :&nbsp;<span class="pro-condition">{{$detailProduct->name}}</span></div>
+									<div>Location :&nbsp;<span class="pro-condition">
+										{{
+											FePageController::extractAddress($detailProduct->address);
+										}}
+									</span></div>
 									<div class="clear"></div>
 									<div class="col-lg-12 text-centered" style="background-color:#eea236;padding:5px 10px;text-align:center;">
-										<a href="{{Config::get('app.url')}}store-{{$detailProduct->store_id;}}" style="color:white;font-weight:bold;" target="_blank">
-										{{Config::get('app.url')}}store-{{$detailProduct->store_id;}}
+										<a href="{{Config::get('app.url')}}page/store-{{$detailProduct->store_id;}}" style="color:white;font-weight:bold;">
+										{{Config::get('app.url')}}page/store-{{$detailProduct->store_id;}}
 										</a>
 									</div>
 								</div>
@@ -146,8 +109,14 @@
 				</div>
 				<!--/Slider-->
 			</div>
+			<input
+				class="btn btn-primary" 
+				type="button" 
+				onclick="ProductDetailPrint.print_product_detail('main_area')" 
+				value="Print Product" 
+			/>
 			<div class="row col-lg-12">
-				<ul id="TapTitle" class="nav nav-tabs" style="background-color:#E0E0E0; margin-top:20px; font-size:12px;">
+				<ul id="TapTitle" class="nav nav-tabs">
 				   <li class="active"><a href="#speification_detail" data-toggle="tab">Specification Detail</a></li>
 				   <li><a href="#picture_summary" data-toggle="tab">Picture Summary</a></li>
 				   <li class="dropdown">
@@ -166,17 +135,14 @@
 				    </div>
 					<div class="tab-pane fade" id="picture_summary">
 						@foreach($images as $image)
-							<div class="col-lg-12">
+							<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
 								<div class="product-image-wrapper">
 									<div class="single-products">
-										<div class="productinfo center-image">
-											<?php
-												if($image['pic']){
-													echo '<img src="'.Config::get('app.url').'image/phpthumb/'.$image['pic'].'?p=product&amp;h=250&amp;w=450" />';	
-												}else{
-													echo '<img src="'.Config::get('app.url').'image/phpthumb/No_image_available.jpg?p=product&amp;h=250&amp;w=450" />';
-												}
-											?>
+										<div class="productinfo">
+											<img 
+												class="img-thumbnail img-responsive"
+												src="{{Config::get('app.url')}}/upload/product/{{$image['pic']}}"
+											>
 										</div>
 									</div>
 								</div>
@@ -218,7 +184,6 @@
 						</a>
 				   </div>
 				</div>
-                
 				<script>
 				   $(function(){
 				      $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -235,7 +200,7 @@
 			<div class="clear"></div><div class="clear"></div>
 			<div class="col-lg-3 text-centered" style="border:1px solid #dddddd;background-color:#dddddd;padding:5px 10px;font-weight:bold;text-align:center;">Related Products</div>
 			{{
-			App::make('FePageController')->findRelatedProducts(array($detailProduct->category_id))
+			App::make('FePageController')->findRelatedProducts($detailProduct->s_category_id)
 			}}
 			<br />
 		</div><!--============End detail container hre=====-->
@@ -245,14 +210,15 @@
 	</div>
 @endsection
 <script
-	src="{{Config::get('app.url')}}frontend/js/product_detail_print.js"></script>
+	src="{{Config::get('app.url')}}/frontend/js/product_detail_print.js"></script>
 <script
-	src="{{Config::get('app.url')}}frontend/js/carouselengine/amazingcarousel.js"></script>
+	src="{{Config::get('app.url')}}/frontend/js/carouselengine/amazingcarousel.js"></script>
 <link rel="stylesheet" type="text/css"
-	href="{{Config::get('app.url')}}frontend/js/carouselengine/initcarousel-1.css">
+	href="{{Config::get('app.url')}}/frontend/js/carouselengine/initcarousel-1.css">
 <script
-	src="{{Config::get('app.url')}}frontend/js/carouselengine/initcarousel-1.js"></script>
+	src="{{Config::get('app.url')}}/frontend/js/carouselengine/initcarousel-1.js"></script>
 
+{{HTML::script('frontend/js/jquery.js')}}
 <script>
 	jQuery(document).ready(function(){
 		jQuery(".categories_menu").hide();

@@ -3,14 +3,13 @@
 		<div class="panel-group category-products" id="accordian">
 			<div class="all_categories_type" id="menu_toogle">
 				<img src="{{Config::get('app.url')}}frontend/images/icons/all_category.png" alt="" title="" height="23"/>
-				&nbsp; 
+				<strong> &nbsp;&nbsp;&nbsp; 
 					@foreach ($MaindetailCategory as $maincate)
-					<?php
-	      			$cateName = $maincate->{'name_'.Session::get('lang')};
-	      			?>
-	      			{{ str_limit($cateName, $limit = 20, $end = '') }}
+					<?php 
+						echo $maincate->{'name_'.Session::get('lang')};
+					?> 
 					@endforeach
-					&nbsp;&nbsp;&nbsp;<span class="caret" ></span>
+					&nbsp;&nbsp;&nbsp;<span class="caret" ></span></strong>
 			</div>
 			<ul class="categories_menu">
 				<?php
@@ -19,18 +18,8 @@
 				?>
 					@foreach ($detailCategory as $categoriesList)
 						<li class="dropdown-mainmenu">
-								<?php
-								if($finalCategory->countCategory($categoriesList->id) > 0 ){
-						 		?>
-						 			<a href="<?php echo URL::to('products/productbycategories/'.$categoriesList->id.'/'.$categoriesList->id); ?>">
-						 		<?php
-						 		}else{ ?>
-						 			<a href="<?php echo URL::to('products/productbycategories/'.$categoriesList->parent_id.'/'.$categoriesList->id); ?>">
-						 		<?php 
-						 		}
-								$subcate = $categoriesList->{'name_'.Session::get('lang')};
-								?>
-								{{ str_limit($subcate, $limit = 30, $end = '...') }}
+							<a href="<?php echo URL::to('products/productbycategories/'.$categoriesList->parent_id.'/'.$categoriesList->id); ?>">
+								<?php echo $categoriesList->{'name_'.Session::get('lang')};?>
 				      		</a>
 						</li>
 					@endforeach
@@ -42,7 +31,7 @@
 			</ul>
 		</div>
 		<!--=========Register seller============ -->
-		<div class="panel-group category-products ads_side_bar" id="accordian">
+		<div class="panel-group category-products" id="accordian">
 			<!-- type:homepage, position: left meduim, limit -->
 			{{ App::make('FePageController')->getFeAds(1, 4, 3) }}
 		</div>

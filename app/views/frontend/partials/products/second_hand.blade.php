@@ -31,18 +31,16 @@
 							<div class="productinfo text-center">
 								<a href="#"
 									onclick="popupDetails.add_popup_detail(<?php echo $secondHandProduct->id; ?>)"
-									data-toggle="modal" data-target="#myModal">
-									<?php 
-										if($secondHandProduct->thumbnail){
-											echo '<img src="'.Config::get('app.url').'image/phpthumb/'.$secondHandProduct->thumbnail.'?p=product&amp;h=90&amp;w=120" />';
-										}else{
-											echo '<img src="'.Config::get('app.url').'image/phpthumb/No_image_available.jpg?p=product&amp;h=90&amp;w=120" />';
-										}
-									?>
+									data-toggle="modal" data-target="#myModal"> <img
+									src="{{Config::get('app.url')}}/upload/product/thumb/{{$secondHandProduct->thumbnail}}"
+									alt="" />
 								</a>
 								<h2>$ {{$secondHandProduct->price}}</h2>
 								<a href="{{Config::get('app.url')}}product/details/{{$secondHandProduct->id}}"><?php echo substr($secondHandProduct->title,0,20)?></a>
 							</div>
+							<img
+								src="{{Config::get('app.url')}}/frontend/images/home/sale.png"
+								class="new" alt="" />
 						</div>
 					</div>
 				</div>

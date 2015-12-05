@@ -9,15 +9,8 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
-Route::any('/{store}', 'FeStoreController@index');
-Route::any('/{store}/search/{label}', 'FeStoreController@searchUserPropuctByCategory');
-Route::any('/{store}/p/{page_id}', 'FeStoreController@getUserPage');
-Route::any('/{store}/my/detail/{product_id}', 'FeStoreController@myDetail');
-Route::any('/{store}/analytics', 'FeStoreController@getAnalytics');
-Route::any('/analytics', 'FeStoreController@getTracking');
-Route::get('/admin/login', 'BeLoginController@showLogin');
+
 Route::get('/admin', 'BeLoginController@showLogin');
-Route::get('admin', 'BeLoginController@showLogin');
 Route::post('/admin/login', 'BeLoginController@doLogin');
 Route::get('/admin/send-forget-password', 'BeLoginController@sendResetPassword');
 Route::post('/admin/send-forget-password', 'BeLoginController@sendResetPassword');
@@ -28,10 +21,11 @@ Route::group(array('before' => 'auth'), function () {
     Route::get('/admin/stores/status/{page}/{userid}/{status}','BeStoreController@disableAndEnableStore');
     Route::get('/admin/stores/free','BeStoreController@listAllStoresFree');
     Route::get('/admin/stores/premium','BeStoreController@listAllStoresPremium');
+    Route::get('/admin/products','BeProductController@listProduct');
+    Route::get('/admin/products/add','BeProductController@addProduct');
+    Route::get('/admin/products/edit/{product_id}','BeProductController@addProduct');
     Route::get('/admin/products/delete/{page}/{productid}','BeProductController@deleteProduct');
-    Route::get('/admin/products','BeProductController@post');
-    Route::any('/admin/products/add','BeProductController@add');
-    Route::any('/admin/products/ajax','BeProductController@getAjax');
+    Route::get('/admin/products/free','BeProductController@listAllProductsFree');
     Route::get('/admin/products/status/{page}/{productid}/{status}','BeProductController@disableAndEnableProduct');
     Route::get('/admin/products/premium','BeProductController@listAllProductsPremium');
     Route::get('/admin/user-role-play','BeUserRolePlayController@listUserRolePlay');
@@ -119,55 +113,30 @@ Route::group(array('before' => 'auth'), function () {
 //=============Routes for front end page==============
 
 Route::any('/', 'FePageController@index');
+Route::get('/play/{label_name}', 'FePageController@play');
+Route::get('/search/label', 'FePageController@searchByLabel');
+Route::get('/search/label/{label_name}', 'FePageController@searchByLabel');
+Route::get('/search/label/{label_name}/{sub_label}', 'FePageController@subLabel');
+Route::get('/searchallajax', 'FePageController@searchByLabelAajex');
+Route::any('/singlepagejson', 'FePageController@getSinglePageJson');
+Route::any('/ajax', 'FePageController@getAjax');
+Route::get('/rss', 'FePageController@getRss');
+Route::get('/detail/{name}', 'FePageController@getDetail');
+Route::get('/p/{page}', 'FePageController@page');
+Route::any('/{singlepage}', 'FePageController@getSinglePage');
+Route::any('/search/{key_word}', 'FePageController@search');
 Route::any('/image/phpthumb/{image}', 'ImageController@phpThumb');
-Route::get('/media/image/{width}x{height}/{image}', function($width, $height, $image)
-{
-	$file = base_path() . '/' . $image;
-	// for remote file
-	//$file = 'http://i.imgur.com/1YAaAVq.jpg';
-	App::make('phpthumb')
-		->create($file)->make('resize', array($width, $height))->show();
-	//Thumb::create($file)->make('resize', array($width, $height))->show()->save(base_path() . '/', 'aaa.jpg');
-	/*
-	 Thumb::create($file)->make('resize', array($width, $height))->make('crop', array('center', $width, $height))->show();
-	 Thumb::create($file)->make('resize', array($width, $height))->make('crop', array('basic', 100, 100, 300, 200))->show();
-	 Thumb::create($file)->make('resize', array($width, $height))->make('resize', array($width, $height))->show();
-	 Thumb::create($file)->make('resize', array($width, $height))->make('resize', array($width, $height, 'adaptive'))->save(base_path() . '/', 'aaa.jpg')->show();
-	 Thumb::create($file)->make('resize', array($width, $height))->rotate(array('degree', 180))->show();
-	 Thumb::create($file)->make('resize', array($width, $height))->reflection(array(40, 40, 80, true, '#a4a4a4'))->show();
-	 Thumb::create($file)->make('resize', array($width, $height))->save(base_path() . '/', 'aaa.jpg');
-	 Thumb::create($file)->make('resize', array($width, $height))->show();
-	*/
 
-});
-
-
-Route::any('/{lang}/user/signin', 'FeUserController@signIn');
-Route::any('/{lang}/user/signup', 'FeUserController@signUp');
-
-Route::get('/{lang}/fe/search', 'FeSearchController@search');
-Route::get('/fe/search', 'FeSearchController@search');
-Route::get('/{lang}/search/products', 'FeSearchController@searchProduct');
-Route::get('/search/products', 'FeSearchController@searchProduct');
-
-/*for detail page*/
-Route::any('/{lang}/pro/{y}/{m}/{d}/{product_name}/{pro_id}',
-    'FeDetailController@index');
-Route::any('/pro/{y}/{m}/{d}/{product_name}/{pro_id}',
-    'FeDetailController@index');
-Route::any('/pro/{lang}/{product_name}/{pro_id}', 'FeDetailController@index');
-Route::any('/pro/{product_name}/{pro_id}', 'FeDetailController@index');
 
 /*for member page*/
 Route::group(array('prefix' => 'member'), function () {
-	Route::any('/logout', 'FeMemberController@getSignOut');
-	Route::any('/login', 'FeMemberController@index');
-	Route::any('/register','FeMemberController@register'); 
-	Route::any('/getdistrict','FeMemberController@getDistric');
-	Route::any('/geturladress','FeMemberController@checkUrlAddress');
-	Route::any('/getmarkettype/{id}','FeMemberController@getMarketType');
-	Route::any('/agreement/{usertype}','FeMemberController@agreement');
-	Route::any('/byajax','FeMemberController@GetAjax');
+    Route::any('/logout', 'FeMemberController@getSignOut');
+    Route::any('/login', 'FeMemberController@index');
+    Route::any('/register','FeMemberController@register'); 
+    Route::any('/getdistrict','FeMemberController@getDistric');
+    Route::any('/geturladress','FeMemberController@checkUrlAddress');
+    Route::any('/getmarkettype/{id}','FeMemberController@getMarketType');
+    Route::any('/agreement/{usertype}','FeMemberController@agreement');
 });
 
 Route::group(array('before' => 'auth_member'), function () {
@@ -187,7 +156,6 @@ Route::group(array('before' => 'auth_member'), function () {
         Route::any('/ispublished/{product_id}/{is_publish}', 'FeProductController@isPublishProduct');
         Route::any('/delete/{product_id}', 'FeProductController@deleteProduct');
         Route::any('/edit/{product_id}', 'FeProductController@editProduct');
-        Route::any('/ajax', 'FeProductController@ajax');
         Route::any('/topup/{product_id}', 'FeProductController@topUpProduct');
         }
     );
@@ -202,15 +170,15 @@ Route::group(array('prefix' => 'products'), function () {
 } );
 
 /*===========Product Details==*/
-
-Route::group(array('prefix' => 'product'), function (){
-    Route::any('/account_role/{ID}','FePageController@listProductAccountRole');
-    Route::any('/transfter_type/{ID}','FePageController@listProductTransfterType');
-	Route::any('/list/{ID}', 'FePageController@listSuppermarket');
+Route::group(array('prefix' => 'product'), function () {
+    Route::any('/list/{ID}', 'FePageController@listSuppermarket');
     Route::any('/list/{supermarket_id}/{ID}', 'FePageController@listSuppermarket'); 
     Route::any('/details/{id}', 'FePageController@getProductDetials');
     Route::any('/js_detail/{product_id}', 'FePageController@popupDetailProduct');
-	Route::any('/findRelatedProducts/{category_id}', 'FePageController@findRelatedProducts');
-});
+    Route::any('/findRelatedProducts/{category_id}', 'FePageController@findRelatedProducts');
+} );
+// [your site path]/app/routes.php
 
 Route::any('page.html/{page_id}', 'FePageController@pagesList');
+
+Route::any('/doeun/k', 'FeMemberController@test');

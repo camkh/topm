@@ -1,23 +1,3 @@
-<?php
-date_default_timezone_set ( 'Asia/Phnom_Penh' );
-$currentDate = date ( 'Y-m-d' );
-
-$userClass = new User ();
-$userData = $userClass->getUser($dataStore->user_id);
-$currentUserType =$userData->result->account_type;
-if(!empty($dataStore->sto_url)) {
-	$userHome = @Config::get('app.url').''.$dataStore->sto_url;
-} else {
-	$userHome = @Config::get('app.url').'store-'.$dataStore->id;
-}
-function rm($article, $char) {
-	$article = preg_replace ( "/<img[^>]+\>/i", "(image) ", $article );
-	if (strlen ( $article ) > $char) {
-		return substr ( $article, 0, $char ) . '...';
-	} else
-		return $article;
-}
-?>
 @extends('frontend.modules.store.layout.layout') @section('title')
 {{($dataStore->title_en ? $dataStore->{'title_'.Session::get('lang')} :
 'Welcome to my page')}} @endsection @section('description')Buy, Sell
@@ -29,6 +9,19 @@ function rm($article, $char) {
 </ol>
 @endsection
 @section('content')
+<?php
+date_default_timezone_set ( 'Asia/Phnom_Penh' );
+$currentDate = date ( 'Y-m-d' );
+
+$userClass = new User ();
+$userData = $userClass->getUser($dataStore->user_id);
+$currentUserType =$userData->result->account_type;
+if(!empty($dataStore->sto_url)) {
+	$userHome = @Config::get('app.url').'page/'.$dataStore->sto_url;
+} else {
+	$userHome = @Config::get('app.url').'page/store-'.$dataStore->id;
+}
+?>
 <div class="col-sm-8">
 	<div class="category-tab lastest-post">
 	@if($currentUserType == 2)
@@ -59,21 +52,21 @@ function rm($article, $char) {
 							<div class="productinfo text-center">
 								<a
 									href="{{$userHome}}/my/detail/{{$product->id}}">
-									@if($product->thumbnail)
-									{{HTML::image("image/phpthumb/$product->thumbnail?p=product&amp;h=150&amp;w=150",$product->title,array('class'
-						=> 'img-rounded','width'=>'150'))}}
-									@else 
-									{{HTML::image("image/phpthumb/No_image_available.jpg?p=1&amp;h=150&amp;w=150",$product->title,array('class'
-						=> 'img-rounded','width'=>'150'))}}
-						@endif
+									@if($product->thumbnail) <img
+									src="{{Config::get('app.url')}}upload/product/thumb/{{$product->thumbnail}}"
+									alt="{{$product->title}}" /> @else <img
+									src="{{Config::get('app.url')}}upload/product/thumb/{{$product->thumbnail}}"
+									alt="{{$product->title}}" /> @endif
 								</a>
-								<?php $readmore = @rm ( $product->title, 30 );?>
-								<h2>{{$readmore}}</h2>
+								<h2>{{$product->title}}</h2>
 								<p>{{$product->price}} $</p>
 								<a
 									href="{{$userHome}}/my/detail/{{$product->id}}">View
 									Details</a>
 							</div>
+							<img
+								src="{{Config::get('app.url')}}/frontend/images/home/sale.png"
+								class="new" alt="" />
 						</div>
 					</div>
 				</div>
@@ -133,25 +126,20 @@ function rm($article, $char) {
 @endsection
 
 @section('right')
-	@include('frontend.modules.store.partials.slidebar.fb_like')
-	<?php $memberTool = array ();?>
-	@if (! empty ( $toolView ))
-		@foreach ( $toolView as $tool )
-			@if($tool->type == 'tool_visitor_info' && $tool->status == 1)
-			@include('frontend.modules.store.partials.slidebar.tool_visitor')
-			@endif
-		@endforeach
-	@endif
-	
-	@if(!empty($banner))
-	    @foreach($banner as $ban)
-	        @if($ban->ban_position == 'rs')
-	            @if($ban->ban_enddate >= $currentDate)
-				<a class="banner-link" href="{{@$ban->ban_link}}" target="_blank"><img
-					src="{{Config::get('app.url')}}upload/user-banner/{{$ban->ban_image}}"
-					style="width: 100%;" /></a>
-				@endif 
-			@endif 
-		@endforeach 
-	@endif 
-@endsection
+<?php $memberTool = array ();?>
+@if (! empty ( $toolView ))
+	@foreach ( $toolView as $tool )
+		@if($tool->type == 'tool_visitor_info' && $tool->status == 1)
+		@include('frontend.modules.store.partials.slidebar.tool_visitor')
+		@endif
+	@endforeach
+@endif
+
+@if(!empty($banner))
+    @foreach($banner as $ban)
+        @if($ban->ban_position == 'rs')
+            @if($ban->ban_enddate >= $currentDate)
+<a class="banner-link" href="{{@$ban->ban_link}}" target="_blank"><img
+	src="{{Config::get('app.url')}}upload/user-banner/{{$ban->ban_image}}"
+	style="width: 100%;" /></a>
+@endif @endif @endforeach @endif @endsection

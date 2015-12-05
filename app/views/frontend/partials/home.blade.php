@@ -1,52 +1,51 @@
-@extends('frontend.layout') @section('title') Home @endsection
-@section('breadcrumb')
-<ol class="breadcrumb">
-	<li><a href="{{Config::get('app.url')}}">Home</a></li>
-	<li><a href="#">Library</a></li>
-	<li class="active">Data</li>
-</ol>
+@extends('frontend.layout') 
+@section('title')
+	@if(Config::get('app.url') == 'http://www.allkun.com/')
+   	ALLKUN.COM
+   	@elseif(Config::get('app.url') == 'http://www.roeung.com/')
+   	ROEUNG.COM
+   	@elseif(Config::get('app.url') == 'http://www.sruol9.com/')
+   	SRUOL9.COM
+   	@elseif(Config::get('app.url') == 'http://www.khmermovies.co/')
+   	KHMERMOIVES.COM
+   	@elseif(Config::get('app.url') == 'http://www.mkhmer.co/')
+  	MKHMER.CO
+   	@elseif(Config::get('app.url') == 'http://www.m-khmer.com/')
+   	M-KHMER.COM
+   	@else
+   	TOPKHMERSONG.COM
+   	@endif
 @endsection
+@section('description')KHMER SONG @endsection
 @section('content')
-{{ App::make('FePageController')->mainCategory() }}
-<div class="col-lg-10">@include('frontend.partials.slider')</div>
-<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 pull-right">
-	
-	<!--/category-tab-->
-	<div class="category-tab feature-ad lastest-post  product_wrapper">
-		<!--recommended_items-->
-			<div class="col-lg-12" style="padding: 0;">
-				@include('frontend.partials.products.homepage_adv')
-				@include('frontend.partials.products.latest')
-				@include('frontend.partials.products.popular')
-				@include('frontend.partials.products.hot_promotion')
-				@include('frontend.partials.products.new_arrival')
-				@include('frontend.partials.products.monthly_pay')
-				@include('frontend.partials.products.second_hand')
-				@include('frontend.partials.products.buyer_request')
-			</div>
-	</div>
-	@include('frontend.partials.products.popup_details')
-</div>
-</div>
-@endsection
-@section('client_location')
-@include('frontend.partials.client_location')
-@endsection
-{{HTML::script('frontend/js/jquery.js')}}
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+<script type="text/javascript">
+	var pageType = 'home';
+</script>
+{{HTML::script('frontend/plugin/feature/js/jquery.easing-1.3.js')}}
+{{HTML::script('frontend/plugin/feature/js/jquery_005.js')}}
+{{HTML::script('frontend/plugin/feature/js/jquery_004.js')}}
+{{HTML::script('frontend/plugin/feature/js/efects.js')}}
+{{HTML::style('frontend/plugin/feature/css/slideshow.css')}}
+	@include('frontend.partials.tvlink')
+	<div id="ad_1" class="contentAd"></div>
 
+
+	<div id="getMusic">
+		
+	</div>
+	<div id="getVideoResult1"><div class="loadPlaylist"></div></div>
+	<div id="getVideoResult6"></div>
+	<div id="getVideoResult2"></div>
+	<div id="getVideoResult3"></div>
+	<div id="getVideoResult4"></div>
+	<div id="getVideoResult5"></div>
+	
+	<input type="hidden" id="readyLoad" value="0"/>
+	<center><a class="btn btn-danger btn-lg" href="{{Config::get('app.url')}}search/label" role="button" style="margin-top: 10px"><span class="icos-plus"></span> View all</a></center>
 <script>
+	var dataLoad = 0;
 	jQuery(document).ready(function(){
-		jQuery("#menu_toogle").css('cursor','pointer');
-		jQuery("#menu_toogle").click(function(){
-			jQuery(".categories_menu").toggle("slow");
-		});
+		sectionHome(1,'image');
 	});
 </script>
-
+@endsection

@@ -1,7 +1,146 @@
 <?php
 
 class MCategory extends Eloquent{
+	public $mVideo;
+	function __construct() {
+		$this->mVideo = new MVideo ();
+	}
+	public function menuList($parent=0,$level=0,$userHome='', $atcitve='') {
+        $response = new stdClass();
+		try {
+            $where = array(
+                'parent_id' => $parent
+            );
+			$result = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'))
+            ->select('*')
+			->where($where)
+			->get();
+            $userMenus = "";
+			//$userMenus .= "<ul class='sf-menu' id='menunav'>";
+            $homeUrl = $userHome;
+            if(!empty($result)) {
+    			foreach($result as $userMenu){
+    				$setActive = '';
+    				if($atcitve == $userMenu->slug) {
+    					$setActive = 'active';
+    				}
+                    if($level ==0) {
+                        $id = 'item-'.$userMenu->id.$userMenu->id;
+                    } else {
+                        $id = 'item-'.$userMenu->id;
+                    }
+    				$userMenus .= "<li class='$setActive'>\n";
+                        $menuName = $userMenu->name_lml;                        
+    					$userMenus .= "<a href='{$homeUrl}search/label/{$userMenu->slug}'>{$menuName}</a>\n";
+    
+    					// Run this function again (it would stop running when the mysql_num_result is 0
+    					$userMenus .= $this->menuSubList($userMenu->id,$level+1,$userHome,$atcitve);
+    				$userMenus .= "</li>\n";
+    			} 
+            }
+            //$userMenus .= "</ul>\n";
+            return $userMenus;
+		}catch (\Exception $e){
+			$response->errorMsg = $e->getMessage();
+		}
+        return $response;
+    }
+ 
+    /**
+     * Get User sub category
+     * @method menuUserList
+     * @return string
+     * @author Socheat Ngann
+     */
+    public function menuSubList($parent=0,$level=0,$homeUrl='',$atcitve='') {
+        $response = new stdClass();
+		try {
+            $where = array(
+                'parent_id' => $parent
+            );
+			$result = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'))
+            ->select('*')
+			->where($where)
+			->get();
+			$userMenus = "";
+			if(!empty($result)) {
+				$count = count($result);
+				$userMenus .= '<span class="caption blue">+</span>';
+			}
+			$userMenus .= "<ul>\n";
+            if(!empty($result)) {
+    			foreach($result as $userMenu){
+    				$setActive = '';
+    				
+    				if($atcitve == $userMenu->slug) {
+    					$setActive = 'active';
+    				}
+                    if($level ==0) {
+                        $id = 'item-'.$userMenu->id.$userMenu->id;
+                    } else {
+                        $id = 'item-'.$userMenu->id;
+                    }
+                    $id_level = $level+1;
+    				$userMenus .= "<li class='$setActive'>\n";
+                        $menuName = $userMenu->name_lml; 
+    					$userMenus .= "<a href='{$homeUrl}search/label/{$userMenu->slug}'>{$menuName}</a>\n";
+    
+    					// Run this function again (it would stop running when the mysql_num_result is 0
+    					$userMenus .= $this->menuSubList($userMenu->id,$level+1,$homeUrl);
+    				$userMenus .= "</li>\n";
+    			} 
+            }
+            $userMenus .= "</ul>\n";
+            return $userMenus;
+		}catch (\Exception $e){
+			$response->result = 0;
+			$response->errorMsg = $e->getMessage();
+		}
+        return $response;
+    }
 
+	public function menuMainList($parent=0,$level=0,$userHome='', $atcitve='') {
+        $response = new stdClass();
+		try {
+            $where = array(
+                'parent_id' => $parent
+            );
+			$result = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'))
+            ->select('*')
+			->where($where)
+			->get();
+            $userMenus = "";
+			//$userMenus .= "<ul class='sf-menu' id='menunav'>";
+            $homeUrl = $userHome;
+            if(!empty($result)) {
+    			foreach($result as $userMenu){
+    				$setActive = '';
+    				if($atcitve == $userMenu->slug) {
+    					$setActive = 'active';
+    				}
+                    if($level ==0) {
+                        $id = 'item-'.$userMenu->id.$userMenu->id;
+                    } else {
+                        $id = 'item-'.$userMenu->id;
+                    }
+    				$userMenus .= "<li class='$setActive'>\n";
+                        $menuName = $userMenu->name_lml;                        
+    					$userMenus .= "<a href='{$homeUrl}search/label/{$userMenu->slug}'>{$menuName}</a>\n";
+    
+    					// Run this function again (it would stop running when the mysql_num_result is 0
+    					if($atcitve == $userMenu->slug) {
+    						$userMenus .= $this->menuSubList($userMenu->id,$level+1,$userHome,$atcitve);
+    					}
+    				$userMenus .= "</li>\n";
+    			} 
+            }
+            //$userMenus .= "</ul>\n";
+            return $userMenus;
+		}catch (\Exception $e){
+			$response->errorMsg = $e->getMessage();
+		}
+        return $response;
+    }    
 	/**
 	 *
 	 * fetchCategoryTreeList: this function using for listing sub category
@@ -81,6 +220,36 @@ class MCategory extends Eloquent{
 							'name_utf' => $spacing . $row->name_utf
 						);
 					$treeArray = self::fetchCategoryTree($row->id, $spacing . '&nbsp;&nbsp;',$treeArray);
+				}
+			}
+		}catch (\Exception $e){
+			Log::error('Message: '.$e->getMessage().' File:'.$e->getFile().' Line'.$e->getLine());
+		}
+		return $treeArray;
+	}
+
+
+
+	public function getCategorySlug($parent = 0, $spacing = '', $treeArray = ''){
+		try {
+			if(!is_array($treeArray)){
+				$treeArray = array();
+			}
+			$result = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'))
+					->select('*')
+					->where('parent_id','=',$parent)
+					->orderBy('id','asc')
+					->get();
+			if(count($result) > 0){
+				foreach ($result as $row) {
+					$treeArray[] = array(
+							'id' => $row->id,
+							'parent_id' => $row->parent_id, 
+							'name_lml' => $spacing . $row->name_lml,
+							'name_utf' => $spacing . $row->name_utf,
+							'slug' => $spacing . $row->slug,
+						);
+					$treeArray = self::getCategorySlug($row->id, $spacing . '',$treeArray);
 				}
 			}
 		}catch (\Exception $e){
@@ -238,7 +407,93 @@ class MCategory extends Eloquent{
 			Log::error('Message: '.$e->getMessage().' File:'.$e->getFile().' Line'.$e->getLine());
 		}
 		return $response;
+	}
+
+
+	/**
+	 *
+	 * getCategoryById: the function using for category by id
+	 * @param integer $id: the id of category
+	 * @return array category
+	 * @access public
+	 */
+	public function getCategoryBySlug($slug='',$name = null){
+		$results = array();
+		try {
+			$query = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'));
+			$query->select('*');
+			if(!empty($slug)) {
+				$query->where('slug', '=', $slug);
+			}
+			$results = $query->first();
+	
+		}catch (\Exception $e){
+			$results = 0;
+			Log::error('Message: '.$e->getMessage().' File:'.$e->getFile().' Line'.$e->getLine());
+		}
+		return $results;
+	}
+
+	/**
+	 *
+	 * findCategoryByVol: the function using for category by id
+	 * @param integer $id: the id of category
+	 * @return array category
+	 * @access public
+	 */
+	public function findCategoryByVol($slug='production',$order = 'id',$type='vol',$limit=0){
+		$response = array();
+		try {
+			$query = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'));
+			$query->select('*');
+			$query->where('slug', '=',$slug);
+
+			$results = $query->first();
+			if(!empty($results)) {
+				$dataParent = $results;
+				if($type=='vol') {
+					$byProduct = $this->getMainCategories($results->id);
+					if(!empty($byProduct->result)) {
+						$productIDArr = array();
+						foreach ($byProduct->result as $getByVol) {
+							array_push($productIDArr, $getByVol->id);
+						}
+						$query1 = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'));
+						$query1->whereIn('parent_id', $productIDArr);
+						$query1->orderBy($order, 'desc');
+						if($limit==1) {
+							$result  = $query1->get();
+						} else {
+							$result  = $query1->paginate ( $this->mVideo->getConfig ( 'browse_page' )->value );
+						}
+						$response = array('data'=>$result,'parent'=>$dataParent);
+					}
+				} else {
+					$query1 = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'));
+					$query1->where('parent_id', $results->id);
+					$query1->orderBy($order, 'desc');
+					if($limit==1) {
+						$result  = $query1->get();
+					} else {
+						$result  = $query1->paginate ( $this->mVideo->getConfig ( 'browse_page' )->value );
+					}
+					//$result  = $query1->get();
+					$response = array('data'=>$result,'parent'=>$dataParent);
+				}
+
+
+				 				
+			} else {
+				$response = null;
+			}
+	
+		}catch (\Exception $e){
+			$response = 0;
+			Log::error('Message: '.$e->getMessage().' File:'.$e->getFile().' Line'.$e->getLine());
+		}
+		return $response;
 	}	
+
 	/**
 	 *
 	 * getCategoryById: the function using for category by id
@@ -500,14 +755,33 @@ class MCategory extends Eloquent{
 			->select('*')
 			->where('parent_id','=',$parent)
 			->where('status','=',1)
-			->orderBy('name_utf','asc')
+			->orderBy('m_category','asc')
 			->get();
-			var_dump($result);
 		}catch (\Exception $e){
 			Log::error('Message: '.$e->getMessage().' File:'.$e->getFile().' Line'.$e->getLine());
 		}
 		return $result;
 	}
+
+	/**
+	 *
+	 * getSubCategorieBySlug: this function is used for get sub categories to front page
+	 * @param integer $parent: parent id of the category
+	 * @return true: if the sub categories is selected
+	 * @access public
+	 */	
+	public function getSubCategorieBySlug($slug,$parent=0){
+		try {
+			$result = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'))
+			->select('*')
+			->where('slug','=',$slug)
+			->where('status','=',1)
+			->fi();
+		}catch (\Exception $e){
+			Log::error('Message: '.$e->getMessage().' File:'.$e->getFile().' Line'.$e->getLine());
+		}
+		return $result;
+	}	
 
 	/**
 	 *
@@ -645,13 +919,20 @@ class MCategory extends Eloquent{
 	 * @author kimhim
 	 */
 
-	public function getMainCategories($parentid = 0){
+	public function getMainCategories($parentid = 0,$order=null,$limit=0){
 		$response = new stdClass();
 		try {
-			$result = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'))
-			->select('*')
-			->where('status','=', 1)
-			->where('parent_id','=',$parentid)->get();
+			$query = DB::table(Config::get('constants.TABLE_NAME.M_CATEGORY'));
+			$query->select('*');
+			$query->where('status','=', 1);
+			$query->where('parent_id','=',$parentid);
+			if(!empty($order)) {
+				$query->orderBy($order, 'desc');
+			}
+			if(!empty($limit)) {
+				$query->take ( $limit );
+			}
+			$result = $query->get();
 			$response->result = $result;
 		}catch (\Exception $e){
 			$response->result = 0;

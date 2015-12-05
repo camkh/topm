@@ -40,7 +40,7 @@
 													<label>
                                                     <?php $checks = ($tool->status==1)? true : false;?>
                                                         {{Form::checkbox('tooview[]', $tool->id, $checks)}}
-                                                        {{($tool->title =='fb_like' ? trans('store.fbLike') : $tool->title)}}
+                                                        {{$tool->title}}
 													</label>
 												</div>
                                                 @endforeach

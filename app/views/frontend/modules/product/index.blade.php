@@ -1,14 +1,10 @@
-<?php
-function rm($article, $char) {
-	$article = preg_replace ( "/<img[^>]+\>/i", "(image) ", $article );
-	if (strlen ( $article ) > $char) {
-		return substr ( $article, 0, $char ) . '...';
-	} else
-		return $article;
-}
-?>
-@extends('frontend.nosidebar') @section('title') Product Management
-@endsection @section('left') @endsection @section('content')
+@extends('frontend.nosidebar') 
+@section('title')
+Product Management
+@endsection
+@section('left')
+@endsection
+@section('content')
 <div class="col-lg-2 col-md-4">
 	@include('frontend.modules.product.partials.left_product_link')</div>
 <div class="col-lg-10 col-md-8">
@@ -38,15 +34,9 @@ function rm($article, $char) {
 				@foreach($products as $product)
 				<tr>
 					<td>
-					@if($product->thumbnail)
-									{{HTML::image("image/phpthumb/$product->thumbnail?p=product&amp;h=80&amp;w=80",$product->title,array('class'
-						=> 'img-rounded','width'=>'60'))}}
-									@else 
-									{{HTML::image("image/phpthumb/No_image_available.jpg?p=1&amp;h=80&amp;w=80",$product->title,array('class'
-						=> 'img-rounded','width'=>'80'))}}
-						@endif</td>
-						<?php $readmore = @rm ( $product->title, 50 );?>
-					<td>{{ $readmore }}</td>
+						{{HTML::image("upload/product/thumb/$product->thumbnail",$product->title,array('class'
+						=> 'img-rounded','width'=>'100'))}}</td>
+					<td>{{ $product->title }}</td>
 					<td class="visible-lg">
 						<span style="color:red">{{ $product->price }}$</span>, 
 						<span>{{ Session::get('currentUserName') }}</span>, 

@@ -37,7 +37,7 @@ return array (
 				'ALLOW_FILE' => 'mimes:jpeg,png,bmp,gif|image',
 				'THUMB_WIDTH' => 100,
 				'THUMB_HEIGTH' => 100,
-				'DEFAULT' => '/upload/',
+				'DEFAULT' => 'upload/',
 				'DIR_DEFAULT' => '/upload/images/',
 				'DIR_STORE' => '/upload/store/',
 				'DIR_MP3' => '/upload/mp3/',
@@ -78,7 +78,9 @@ return array (
 				'PERMISSION' => 'permission',
 				'PRODUCT_TRANSFER_TYPE' => 'product_transfer_type',
 				'ACCOUNT_ROLE' => 'account_role', 
-				'POST_IN_CATEGORY' => 'post_in_category', 
+				'POST_IN_CATEGORY' => 'post_in_category',
+				'CONFIG' => 'config',
+				'GET_URL' => 'geturl', 
 		),
 		'LAYOUT' => array (
 				0 => array (

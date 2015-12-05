@@ -1,23 +1,3 @@
-<?php
-date_default_timezone_set ( 'Asia/Phnom_Penh' );
-$currentDate = date ( 'Y-m-d' );
-
-$userClass = new User ();
-$userData = $userClass->getUser($dataStore->user_id);
-$currentUserType =$userData->result->account_type;
-if(!empty($dataStore->sto_url)) {
-	$userHome = @Config::get('app.url').$dataStore->sto_url;
-} else {
-	$userHome = @Config::get('app.url').'store-'.$dataStore->id;
-}
-function rm($article, $char) {
-	$article = preg_replace ( "/<img[^>]+\>/i", "(image) ", $article );
-	if (strlen ( $article ) > $char) {
-		return substr ( $article, 0, $char ) . '...';
-	} else
-		return $article;
-}
-?>
 @extends('frontend.modules.store.layout.layout')
 @section('title')
 	Home
@@ -56,19 +36,16 @@ function rm($article, $char) {
     				<div class="product-image-wrapper">
     					<div class="single-products">
     						<div class="productinfo text-center">
-    							<a href="{{$userHome}}/my/detail/{{$product->id}}">
+    							<a href="{{Config::get('app.url')}}page/{{$product->store_id}}/my/detail/{{$product->id}}">
                                     @if($product->thumbnail)
-									{{HTML::image("image/phpthumb/$product->thumbnail?p=product&amp;h=150&amp;w=150",$product->title,array('class'
-						=> 'img-rounded','width'=>'150'))}}
-									@else 
-									{{HTML::image("image/phpthumb/No_image_available.jpg?p=1&amp;h=150&amp;w=150",$product->title,array('class'
-						=> 'img-rounded','width'=>'150'))}}
-						@endif
+    								    <img src="{{Config::get('app.url')}}upload/product/thumb/{{$product->thumbnail}}" alt="{{$product->title}}" />
+                                    @else
+                                        <img src="{{Config::get('app.url')}}upload/product/thumb/{{$product->thumbnail}}" alt="{{$product->title}}" />
+                                    @endif
     							</a>
-    							<?php $readmore = @rm ( $product->title, 30 );?>
-    							<h2>{{$readmore}}</h2>
+    							<h2>{{$product->title}}</h2>
     							<p>{{$product->price}} $</p>
-    							<a href="{{$userHome}}/my/detail/{{$product->id}}">View Details</a>
+    							<a href="{{Config::get('app.url')}}page/{{$product->store_id}}/my/detail/{{$product->id}}">View Details</a>
     						</div>
     						<img src="{{Config::get('app.url')}}/frontend/images/home/sale.png" class="new" alt="" />
     					</div>

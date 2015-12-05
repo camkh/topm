@@ -6,9 +6,15 @@
 	<div class="category-tab feature-ad lastest-post">
 		<div class="col-lg-12 popular_product" style="padding: 0;">
 			<ul class="nav nav-tabs">
-				<li>Feature & Popular Products&nbsp;&nbsp;&nbsp;
+				<li><strong>Feature & Popular Products</strong> &nbsp;&nbsp;&nbsp;
 					&frasl;</li>
 				<li>Products : <span class="number-display">25</span></li>
+				<li>Stores :<span class="number-display">25</span></li>
+				<li>Market :<span class="number-display">25</span></li>
+				<li>Companies :<span class="number-display">25</span></li>
+				<li>Home Shop :<span class="number-display">25</span></li>
+				<li>Individual : <span class="number-display">25</span></li>
+				<li>View :<span class="number-display">25</span></li>
 			</ul>
 		</div>
 		<div class="row list-store">
@@ -18,17 +24,9 @@
 					<div class="product-image-wrapper">
 						<div class="single-products">
 							<div class="productinfo">
-								<a href="{{Config::get('app.url')}}store-{{$latestStore->id}}" target="_blank">
-								<?php
-									$storeImg = Config::get('app.url').'frontend/images/default_store.jpg';
-									$image = Config::get('app.url').'upload/store/' . $latestStore->image;
-									// Check if image not in folder store
-									if (@getimagesize($image)) {
-										$storeImg = Config::get('app.url').'upload/store/' . $latestStore->image;
-									}
-								?>
+								<a href="{{Config::get('app.url')}}page/store-{{$latestStore->id}}" target="_blank">
 								 <img
-									src="{{$storeImg}}"
+									src="{{Config::get('app.url')}}upload/store/{{$latestStore->image}}"
 									alt="{{$latestStore->title_en}}"
 									class="img-responsive img-thumbnail"
 								/>
@@ -45,29 +43,17 @@
 			@endforeach
 		</div>
 		<div class="col-lg-12 center-advertise">
-			@if(count($advHorizontalLargeCenters))
-				@foreach($advHorizontalLargeCenters as $adv)
-					<?php
-					$exp_date = $adv->end_date;
-					$exp_date = str_replace ( '/', '-', $exp_date );
-					if (strtotime ( date ( "d-m-Y" ) ) <= strtotime ( $exp_date )) { ?>
-							<a href="{{$adv->link_url}}"> <img
-						src="{{Config::get('app.url')}}/upload/advertisement/{{$adv->image;}}"
-						class="img-responsive" alt="" />
-					</a>
-					<?php } else { ?>
-						<img
-							src="{{Config::get('app.url')}}frontend/images/horizontal_default_advertise.jpgpng"
-							class="img-responsive img-thumbnail" alt="image" />
-					<?php } ?>
-				@endforeach
-			@else
-				<img 
-					src="{{Config::get('app.url')}}frontend/images/horizontal_default_advertise.png" 
-					class="img-responsive img-thumbnail" alt="image" />
-			@endif
-
-
+			@foreach($advHorizontalLargeCenters as $adv)
+				<?php
+				$exp_date = $adv->end_date;
+				$exp_date = str_replace ( '/', '-', $exp_date );
+				if (strtotime ( date ( "d-m-Y" ) ) <= strtotime ( $exp_date )) { ?>
+						<a href="{{$adv->link_url}}"> <img
+					src="{{Config::get('app.url')}}/upload/advertisement/{{$adv->image;}}"
+					class="img-responsive" alt="" />
+				</a>
+				<?php } ?>
+			@endforeach
 		</div>
 	</div>
 
